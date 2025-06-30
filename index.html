@@ -137,9 +137,10 @@
         take.style.borderRadius = "6px";
         take.style.cursor = "pointer";
         take.onclick = () => {
+            alert("Будем шлëть sendData");
             Telegram.WebApp.sendData(JSON.stringify({ action: "take_bonus" }));
             Telegram.WebApp.close();
-        };
+        }
         msg.appendChild(take);
       } else if(tries>0){
         btn.disabled = false;
@@ -153,3 +154,4 @@
   </script>
 </body>
 </html>
+
