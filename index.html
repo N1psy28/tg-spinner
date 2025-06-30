@@ -4,71 +4,7 @@
   <meta charset="UTF-8">
   <title>Slot‑Game — бонус</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background: linear-gradient(135deg,#1a1a2e,#16213e);
-      color: #fff;
-      font-family: sans-serif;
-    }
-    h2 {
-      margin-bottom: 10px;
-      text-shadow: 0 0 5px rgba(0,0,0,0.5);
-    }
-    #reels {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .reel {
-      width: 80px;
-      height: 80px;
-      border: 4px solid #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      position: relative;
-      background: #16213e;
-    }
-    .strip {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      transition: top .7s ease-out;
-    }
-    .strip div {
-      width: 100%;
-      height: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-    }
-    #controls {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    #spin {
-      padding: 10px 20px;
-      margin-bottom: 10px;
-      font-size: 16px;
-      font-weight: bold;
-      color: #fff;
-      background: #e67e22;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-      transition: background .3s;
-    }
-    #spin:disabled { background: #555; cursor: default; }
-    #info { margin-top: 10px; }
-    #message { margin-top: 20px; font-size: 18px; text-align: center; }
+    /* … ваши стили из предыдущего примера … */
   </style>
 </head>
 <body>
@@ -85,25 +21,20 @@
   <div id="message"></div>
 
   <script>
-    // Символы и параметры
     const symbols = ["🍒","🔔","🍋","⭐","🍀","💎"];
     const stripCount = symbols.length * 3;
     const reelHeight = 80;
     let tries = 5;
-    // Выбираем выигрышную попытку (1…5)
     const winTry = Math.floor(Math.random() * 5) + 1;
-
-    // Найдём элементы
     const reels = document.querySelectorAll(".reel .strip");
     const btn   = document.getElementById("spin");
     const triesDisplay = document.getElementById("tries");
     const msg   = document.getElementById("message");
 
-    // Строим полосы с символами
     function buildStrips() {
       reels.forEach(strip => {
         strip.innerHTML = "";
-        for (let cycle = 0; cycle < 3; cycle++) {
+        for (let i = 0; i < 3; i++) {
           symbols.forEach(sym => {
             const cell = document.createElement("div");
             cell.textContent = sym;
@@ -113,28 +44,23 @@
       });
     }
 
-    // Одна прокрутка
     async function spinOnce() {
       btn.disabled = true;
       msg.textContent = "";
       tries--;
       triesDisplay.textContent = tries;
-
       const isWin = (tries === 5 - winTry);
 
       reels.forEach(strip => {
-        let symbol = isWin ? "⭐" : symbols[Math.floor(Math.random() * symbols.length)];
-        // Позиция: середина третьего цикла + смещение нужного символа
-        const targetPos = (stripCount / 2) * reelHeight + symbols.indexOf(symbol) * reelHeight;
+        const sym = isWin ? "⭐" : symbols[Math.floor(Math.random() * symbols.length)];
+        const pos = (stripCount / 2) * reelHeight + symbols.indexOf(sym) * reelHeight;
         strip.style.transition = "top .7s ease-out";
-        strip.style.top = `-${targetPos}px`;
+        strip.style.top = `-${pos}px`;
       });
 
-      // Ждём окончания анимации
       await new Promise(r => setTimeout(r, 800));
 
       if (isWin) {
-        // Победа: показываем кнопку перехода в бота
         msg.innerHTML = "🎉 Ура! 70 FS для Вас!<br>";
         const take = document.createElement("button");
         take.textContent = "Забрать бонус";
@@ -149,20 +75,17 @@
           cursor: "pointer"
         });
         take.onclick = () => {
-          // Deep link в чат с ботом, параметр take_bonus
+          // <-- deep‑link на ваш бот:
           window.location.href = "https://t.me/Test_main2424bot?start=take_bonus";
         };
         msg.appendChild(take);
       } else if (tries > 0) {
-        // Если ещё есть попытки, разблокируем кнопку
         btn.disabled = false;
       } else {
-        // Все попытки исчерпаны
         msg.textContent = "К сожалению, вы проиграли все попытки :(";
       }
     }
 
-    // Инициализация
     btn.addEventListener("click", spinOnce);
     buildStrips();
   </script>
