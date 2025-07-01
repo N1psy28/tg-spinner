@@ -148,11 +148,15 @@
           borderRadius: "6px",
           cursor: "pointer"
         });
-        take.onclick = () => {
-          // Deep link в чат с ботом, параметр take_bonus
-          window.location.href = "https://t.me/Test_main2424bot?start=take_bonus";
-        };
-        msg.appendChild(take);
+       take.onclick = () => {
+        if (window.Telegram && window.Telegram.WebApp) {
+          window.Telegram.WebApp.close();
+          window.open("https://t.me/Test_main2424bot?start=take_bonus", "_blank");
+      } else {
+        window.location.href = "https://t.me/Test_main2424bot?start=take_bonus";
+      }
+    };
+
       } else if (tries > 0) {
         // Если ещё есть попытки, разблокируем кнопку
         btn.disabled = false;
