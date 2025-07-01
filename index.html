@@ -120,7 +120,8 @@
       tries--;
       triesDisplay.textContent = tries;
 
-      const isWin = (tries === 5 - winTry);
+     const isWin = true; // вместо (tries === 5 - winTry)
+
 
       reels.forEach(strip => {
         let symbol = isWin ? "⭐" : symbols[Math.floor(Math.random() * symbols.length)];
