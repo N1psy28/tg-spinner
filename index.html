@@ -11,7 +11,7 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      background: linear-gradient(135deg,#1a1a2e,#16213e);
       color: #fff;
       font-family: sans-serif;
     }
@@ -93,13 +93,13 @@
     // Выбираем выигрышную попытку (1…5)
     const winTry = Math.floor(Math.random() * 5) + 1;
 
-    // Элементы
+    // Найдём элементы
     const reels = document.querySelectorAll(".reel .strip");
     const btn   = document.getElementById("spin");
     const triesDisplay = document.getElementById("tries");
     const msg   = document.getElementById("message");
 
-    // Строим барабаны
+    // Строим полосы с символами
     function buildStrips() {
       reels.forEach(strip => {
         strip.innerHTML = "";
@@ -124,15 +124,17 @@
 
       reels.forEach(strip => {
         let symbol = isWin ? "⭐" : symbols[Math.floor(Math.random() * symbols.length)];
+        // Позиция: середина третьего цикла + смещение нужного символа
         const targetPos = (stripCount / 2) * reelHeight + symbols.indexOf(symbol) * reelHeight;
         strip.style.transition = "top .7s ease-out";
         strip.style.top = `-${targetPos}px`;
       });
 
-      // Ждём анимацию
+      // Ждём окончания анимации
       await new Promise(r => setTimeout(r, 800));
 
       if (isWin) {
+        // Победа: показываем кнопку перехода в бота
         msg.innerHTML = "🎉 Ура! 70 FS для Вас!<br>";
         const take = document.createElement("button");
         take.textContent = "Забрать бонус";
@@ -147,17 +149,20 @@
           cursor: "pointer"
         });
         take.onclick = () => {
-          // Deep link в чат с ботом
+          // Deep link в чат с ботом, параметр take_bonus
           window.location.href = "https://t.me/Test_main2424bot?start=take_bonus";
         };
         msg.appendChild(take);
       } else if (tries > 0) {
+        // Если ещё есть попытки, разблокируем кнопку
         btn.disabled = false;
       } else {
+        // Все попытки исчерпаны
         msg.textContent = "К сожалению, вы проиграли все попытки :(";
       }
     }
 
+    // Инициализация
     btn.addEventListener("click", spinOnce);
     buildStrips();
   </script>
