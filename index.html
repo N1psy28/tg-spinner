@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8">Add commentMore actions
   <title>Slot‑Game — бонус</title>
   <style>
+    /* … ваши стили из предыдущего примера … */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       display: flex;
@@ -11,7 +12,7 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      background: linear-gradient(135deg,#1a1a2e,#16213e);
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
       color: #fff;
       font-family: sans-serif;
     }
@@ -93,16 +94,17 @@
     // Выбираем выигрышную попытку (1…5)
     const winTry = Math.floor(Math.random() * 5) + 1;
 
-    // Найдём элементы
+    // Элементы
     const reels = document.querySelectorAll(".reel .strip");
     const btn   = document.getElementById("spin");
     const triesDisplay = document.getElementById("tries");
     const msg   = document.getElementById("message");
 
-    // Строим полосы с символами
+    // Строим барабаны
     function buildStrips() {
       reels.forEach(strip => {
         strip.innerHTML = "";
+        for (let i = 0; i < 3; i++) {
         for (let cycle = 0; cycle < 3; cycle++) {
           symbols.forEach(sym => {
             const cell = document.createElement("div");
@@ -120,22 +122,22 @@
       tries--;
       triesDisplay.textContent = tries;
 
-     const isWin = true; // вместо (tries === 5 - winTry)
-
+      const isWin = (tries === 5 - winTry);
 
       reels.forEach(strip => {
+        const sym = isWin ? "⭐" : symbols[Math.floor(Math.random() * symbols.length)];
+        const pos = (stripCount / 2) * reelHeight + symbols.indexOf(sym) * reelHeight;
         let symbol = isWin ? "⭐" : symbols[Math.floor(Math.random() * symbols.length)];
-        // Позиция: середина третьего цикла + смещение нужного символа
         const targetPos = (stripCount / 2) * reelHeight + symbols.indexOf(symbol) * reelHeight;
         strip.style.transition = "top .7s ease-out";
+        strip.style.top = `-${pos}px`;
         strip.style.top = `-${targetPos}px`;
       });
 
-      // Ждём окончания анимации
+      // Ждём анимацию
       await new Promise(r => setTimeout(r, 800));
 
       if (isWin) {
-        // Победа: показываем кнопку перехода в бота
         msg.innerHTML = "🎉 Ура! 70 FS для Вас!<br>";
         const take = document.createElement("button");
         take.textContent = "Забрать бонус";
@@ -149,26 +151,19 @@
           borderRadius: "6px",
           cursor: "pointer"
         });
-       take.onclick = () => {
-        if (window.Telegram && window.Telegram.WebApp) {
-          window.Telegram.WebApp.close();
-          window.open("https://t.me/Test_main2424bot?start=take_bonus", "_blank");
-      } else {
-        window.location.href = "https://t.me/Test_main2424bot?start=take_bonus";
-      }
-    };
-
+        take.onclick = () => {
+          // <-- deep‑link на ваш бот:
+          // Deep link в чат с ботом
+          window.location.href = "https://t.me/Test_main2424bot?start=take_bonus";
+        };
+        msg.appendChild(take);
       } else if (tries > 0) {
-        // Если ещё есть попытки, разблокируем кнопку
         btn.disabled = false;
       } else {
-        // Все попытки исчерпаны
         msg.textContent = "К сожалению, вы проиграли все попытки :(";
       }
     }
- 
-    msg.appendChild(take);
-    // Инициализация
+
     btn.addEventListener("click", spinOnce);
     buildStrips();
   </script>
